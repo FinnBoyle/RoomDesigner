@@ -1,16 +1,29 @@
-# This is a sample Python script.
+import tkinter as tk
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+# Create window
+window = tk.Tk()
+window.title("Room Designer")
+window.minsize(500, 250)
 
+# Create button panel, and buttons in panel
+buttons = tk.Frame(window, bg="lightgreen", borderwidth=7.5, highlightbackground="black", highlightthickness=1)
+buttons.pack(fill=tk.Y, side=tk.LEFT)
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+buildWalls = tk.Button(master=buttons, text="Build Walls", width=10, bg="lightblue")
+buildWalls.pack()
+addFurnishings = tk.Button(master=buttons, text="Add\nFurnishing", width=10, bg="lightblue")
+addFurnishings.pack()
+removeEither = tk.Button(master=buttons, text="Remove\nWalls/\nFurnishing", width=10, bg="lightblue")
+removeEither.pack()
 
+# Components added here
+workspace = tk.Frame(window, bg="lightyellow")
+workspace.pack(fill=tk.BOTH, expand=True)
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+# To remove...
+canvas = tk.Canvas(workspace, width=100, height=100, bg="lightyellow")
+canvas.pack()
+canvas.create_oval(25, 25, 75, 75, width=10, fill="black")
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+# Build GUI
+window.mainloop()
