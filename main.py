@@ -15,20 +15,28 @@ def button_select(event):
     if buttonSelected == 1:
         radius = 75
         canvas.create_oval(x-radius, y-radius, x+radius, y+radius, outline="red", width=2)
+        window.config(cursor="arrow")
     elif buttonSelected == 2:
         radius = 150
         canvas.create_oval(x-radius, y-radius, x+radius, y+radius, outline="green", width=2)
+        window.config(cursor="dotbox")
     else:
         length = 50
         canvas.create_rectangle(x-length, y-length, x+length, y+length, outline="orange", width=4)
+        window.config(cursor="")
 
 
+# change cursor for each button type
 def set_cursor(event):
-    window.config(cursor="top_left_arrow")
-
-
-def reset_cursor(event):
-    window.config(cursor="")
+    if buttonSelected == 0:
+        window.config(cursor="")
+    elif buttonSelected == 1:
+        window.config(cursor="circle")
+    elif buttonSelected == 2:
+        window.config(cursor="dotbox")
+    else:
+        window.config(cursor="question_arrow")
+        print("Mouse cursor config error")
 
 
 # Create window
@@ -36,9 +44,8 @@ window = tk.Tk()
 window.title("Room Designer")
 window.minsize(500, 250)
 
-# Cursor testing
+# set cursor
 window.bind("<Enter>", set_cursor)
-window.bind("<Leave>", reset_cursor)
 
 # Create button panel, and buttons in panel
 buttons = tk.Frame(window, bg="lightgreen", borderwidth=7.5, highlightbackground="black", highlightthickness=1)
