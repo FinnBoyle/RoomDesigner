@@ -1,11 +1,14 @@
-general GUI building
-adding buttons
-workspace functionality
-    adding wall boundings
-    adding components to screen
-    resizing of walls and components
-    rotation of walls and components
-    deletion of components (and walls?)
-    saving?
+need:
+- tidy up!!!!
+- when creating furnishings, should be able to determine size with drag
+- should be able to rotate furnishings
+- wall functionality in general. draw one wall, start drawing the next from where last one finished.
+repeat until final wall meets placement of first wall origin
+- what buttons are needed?
+- sizes of objects displayed next to the corresponding object
 
-Need a plan to create this!
+Done:
+- base workspace
+- basic buttons
+- adding to canvas at mouse location
+- movable objects on canvas
