@@ -1,5 +1,51 @@
 import tkinter as tk
 
+"""
+class Furnishing(tk.Frame):
+    def __init__(self, parent):
+        tk.Frame.__init__(self, parent)
+
+        def create_furnishing(x, y, color):
+            self.canvas.create_oval(x - 25, y - 25, x + 25, y + 25, outline=color, tags="furnishing")
+
+        def drag_start(event):
+            # record item and its location
+            self.drag_data["item"] = self.canvas.find_closest(event.x, event.y)[0]
+            self.drag_data["x"] = event.x
+            self.drag_data["y"] = event.y
+
+        def drag_stop(event):
+            # reset drag information
+            self.drag_data["item"] = None
+            self.drag_data["x"] = 0
+            self.drag_data["y"] = 0
+
+        def drag(event):
+            # compute how much mouse has moved
+            delta_x = event.x - self.drag_data["x"]
+            delta_y = event.y - self.drag_data["y"]
+            # now move the furnishing
+            self.canvas.move(self.drag_data["item"], delta_x, delta_y)
+            # record new pos
+            self.drag_data["x"] = event.x
+            self.drag_data["y"] = event.y
+
+        self.canvas = tk.Canvas(width=100, height=100, background="lightyellow")
+        self.canvas.pack(fill=tk.BOTH, expand=True)
+
+        # used to keep track of a furnishing being dragged
+        self.drag_data = {"x": 0, "y": 0, "item": None}
+
+        # example movable object
+        create_furnishing(100, 100, "blue")
+        create_furnishing(200, 200, "red")
+
+        # bindings for clicking, dragging, and releasing
+        self.canvas.tag_bind("furnishing", "<ButtonPress-1>", drag_start)
+        self.canvas.tag_bind("furnishing", "<ButtonRelease-1>", drag_stop)
+        self.canvas.tag_bind("furnishing", "<B1-Motion>", drag)
+"""
+
 buttonSelected = 0
 
 
@@ -41,6 +87,8 @@ def set_cursor(event):
 
 # Create window
 window = tk.Tk()
+
+"""Furnishing(window).pack(fill=tk.BOTH, expand=True)"""
 window.title("Room Designer")
 window.minsize(500, 250)
 
