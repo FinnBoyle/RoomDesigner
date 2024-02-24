@@ -13,14 +13,31 @@ def delete_furnishing(event):
     canvas.delete(canvas.find_closest(event.x, event.y))
 
 
-""" INCOMPLETE
+""" BUGGED, cause would be 'coordinates' values, should probably change everything to polygons instead of rectangles?
 def rotate_furnishing(event):
     x = event.x
     y = event.y
 
-    angle_radians = math.atan2(y, x)
-    angle_degrees = math.degrees(angle_radians)
-    """
+    selected = canvas.find_closest(x, y)
+    coordinates = event.widget.coords(selected)
+    centre_x = (coordinates[0] + coordinates[2]) / 2
+    centre_y = (coordinates[1] + coordinates[3]) / 2
+
+    dx = x - centre_x
+    dy = y - centre_y
+
+    angle_radians = math.atan2(dy, dx)
+
+    canvas.delete(selected)
+
+    rotated_coords = []
+    for x, y in coordinates:
+        x_rotated = centre_x + (x - centre_x) * math.cos(angle_radians) - (y - centre_y) * math.sin(angle_radians)
+        y_rotated = centre_y + (x - centre_x) * math.cos(angle_radians) + (y - centre_y) * math.sin(angle_radians)
+        rotated_coords.append((x_rotated, y_rotated))
+
+    canvas.create_polygon(*sum(rotated_coords, ()), fill="blue")
+"""
 
 
 def drag_start(event):
