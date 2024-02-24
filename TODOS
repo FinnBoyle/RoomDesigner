@@ -3,7 +3,8 @@ need:
 - when creating furnishings, should be able to determine size with drag
 - wall functionality in general. draw one wall, start drawing the next from where last one finished.
 repeat until final wall meets placement of first wall origin
-- sizes of objects displayed next to the corresponding object
+- sizes of objects displayed next to the corresponding object, would need to merge object and its size label into one.
+This would allow the object and label to be updated together as needed.
 
 in progress:
 - should be able to rotate furnishings. (sorta works, easy fix would be to rotate a set amount of degrees clockwise
