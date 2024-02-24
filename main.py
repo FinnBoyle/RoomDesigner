@@ -4,24 +4,25 @@ import tkinter as tk
 buttonSelected = 0
 
 
-def create_furnishing(mult, x, y, color):
-    canvas.create_rectangle(x - mult * 25, y - mult * 25, x + mult * 25, y + mult * 25,
-                            outline=color, fill=color, tags="furnishing")
+def create_furnishing(mult, x, y):
+    canvas.create_polygon(x - mult * 25, y - mult * 25, x + mult * 25, y - mult * 25, x + mult * 25, y + mult * 25,
+                          x - mult * 25, y + mult * 25, outline="black", fill="lightyellow", width=10,
+                          tags="furnishing")
 
 
 def delete_furnishing(event):
     canvas.delete(canvas.find_closest(event.x, event.y))
 
 
-""" BUGGED, cause would be 'coordinates' values, should probably change everything to polygons instead of rectangles?
+# BUGGED, cause would be 'coordinates' values, should probably change everything to polygons instead of rectangles?
 def rotate_furnishing(event):
     x = event.x
     y = event.y
 
-    selected = canvas.find_closest(x, y)
-    coordinates = event.widget.coords(selected)
-    centre_x = (coordinates[0] + coordinates[2]) / 2
-    centre_y = (coordinates[1] + coordinates[3]) / 2
+    selected = canvas.find_closest(x, y)[0]
+    coordinates = find_vertices(selected)
+    centre_x = sum(x for x, y in coordinates) / len(coordinates)
+    centre_y = sum(y for x, y in coordinates) / len(coordinates)
 
     dx = x - centre_x
     dy = y - centre_y
@@ -33,11 +34,20 @@ def rotate_furnishing(event):
     rotated_coords = []
     for x, y in coordinates:
         x_rotated = centre_x + (x - centre_x) * math.cos(angle_radians) - (y - centre_y) * math.sin(angle_radians)
-        y_rotated = centre_y + (x - centre_x) * math.cos(angle_radians) + (y - centre_y) * math.sin(angle_radians)
+        y_rotated = centre_y + (x - centre_x) * math.sin(angle_radians) + (y - centre_y) * math.cos(angle_radians)
         rotated_coords.append((x_rotated, y_rotated))
 
-    canvas.create_polygon(*sum(rotated_coords, ()), fill="blue")
-"""
+    canvas.create_polygon(*sum(rotated_coords, ()), outline="black", fill="lightyellow", width=10, tags="furnishing")
+
+    """Not sure if needed:
+    canvas.coords(selected, *rotated_coords)
+    canvas.tag_bind("furnishing", "<B1-Motion>", rotate_furnishing)"""
+
+
+def find_vertices(selected):
+    coordinates = canvas.coords(selected)
+
+    return [(coordinates[i], coordinates[i + 1]) for i in range(0, len(coordinates), 2)]
 
 
 def drag_start(event):
@@ -75,10 +85,10 @@ def button_select(event):
     x = event.x
     y = event.y
     if buttonSelected == 1:
-        create_furnishing(1, x, y, "red")
+        create_furnishing(1, x, y)
         window.config(cursor="arrow")
     elif buttonSelected == 2:
-        create_furnishing(2, x, y, "blue")
+        create_furnishing(2, x, y)
         window.config(cursor="dotbox")
     else:
         window.config(cursor="")
@@ -136,7 +146,9 @@ drag_data = {"x": 0, "y": 0, "item": None}
 canvas.tag_bind("furnishing", "<ButtonPress-3>", delete_furnishing)  # right click
 canvas.tag_bind("furnishing", "<ButtonPress-1>", drag_start)  # left click
 canvas.tag_bind("furnishing", "<ButtonRelease-1>", drag_stop)  # left click
-canvas.tag_bind("furnishing", "<B1-Motion>", drag)  # left click
+# canvas.tag_bind("furnishing", "<B1-Motion>", drag)  # left click
+# TEST USE
+canvas.tag_bind("furnishing", "<B1-Motion>", rotate_furnishing)  # left click
 
 # Build GUI
 window.mainloop()

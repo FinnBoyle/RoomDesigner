@@ -1,14 +1,19 @@
 need:
 - tidy up!!!!
 - when creating furnishings, should be able to determine size with drag
-- should be able to rotate furnishings
 - wall functionality in general. draw one wall, start drawing the next from where last one finished.
 repeat until final wall meets placement of first wall origin
-- what buttons are needed?
 - sizes of objects displayed next to the corresponding object
+
+in progress:
+- should be able to rotate furnishings. (sorta works, easy fix would be to rotate a set amount of degrees clockwise
+or anticlockwise based on left or right clicking the object. Hard fix would be make it work smoothly with left click
+and drag, would be useful for creating drag-to-size boxes later.)
+- what buttons are needed? (being changed as needed right now...)
 
 Done:
 - base workspace
 - basic buttons
 - adding to canvas at mouse location
 - movable objects on canvas
+- deleting from canvas at mouse location
