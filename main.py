@@ -4,16 +4,11 @@ import tkinter as tk
 buttonSelected = 0
 
 
-def create_furnishing(color, x, y):
-    canvas.create_polygon(x - 25, y - 25, x + 25, y - 25, x + 25, y + 25, x - 25, y + 25, outline=color,
-                          fill="lightyellow", width=10, tags="furnishing")
-
-
 def delete_furnishing(event):
     canvas.delete(canvas.find_closest(event.x, event.y))
 
 
-def rotate_furnishing(clockwise, event):
+def rotate(event, clockwise):
     if clockwise:
         amount = 0.087  # 5 degrees in radians
     else:
@@ -27,20 +22,23 @@ def rotate_furnishing(clockwise, event):
     centre_x = sum(x for x, y in coordinates) / len(coordinates)
     centre_y = sum(y for x, y in coordinates) / len(coordinates)
 
-    canvas.delete(selected)
-
     rotated_coords = []
     for x, y in coordinates:
         x_rotated = centre_x + (x - centre_x) * math.cos(amount) - (y - centre_y) * math.sin(amount)
         y_rotated = centre_y + (x - centre_x) * math.sin(amount) + (y - centre_y) * math.cos(amount)
-        rotated_coords.append((x_rotated, y_rotated))
+        rotated_coords.append((round(x_rotated, 5), round(y_rotated, 5)))
 
-    canvas.create_polygon(*sum(rotated_coords, ()), outline="black", fill="lightyellow", width=10, tags="furnishing")
+    canvas.delete(selected)
+
+    # if rotated_coords == 2, then shape is a line, if rotated_coords == 4, it is a rectangle
+    if len(rotated_coords) == 2:
+        canvas.create_line(*sum(rotated_coords, ()), fill="red", width=10)
+    elif len(rotated_coords) == 4:
+        canvas.create_polygon(*sum(rotated_coords, ()), outline="black", fill="lightyellow", width=5)
 
 
 def find_vertices(selected):
     coordinates = canvas.coords(selected)
-
     return [(coordinates[i], coordinates[i + 1]) for i in range(0, len(coordinates), 2)]
 
 
@@ -69,42 +67,36 @@ def drag(event):
     move_drag_data["y"] = event.y
 
 
-"""
-def resize_start(event):
-    global resize_dragging
-    resize_dragging = True
-    resize_drag_data["item"] = canvas.find_closest(event.x, event.y)[0]
-    resize_drag_data["x"] = event.x
-    resize_drag_data["y"] = event.y
+def create_start(event):
+    # capture initial coordinates for polygon (top left corner)
+    resize_drag_data["start_x"] = event.x
+    resize_drag_data["start_y"] = event.y
 
 
-def resize_stop(event):
-    global resize_dragging
-    resize_dragging = False
-    resize_drag_data["item"] = None
-    resize_drag_data["x"] = 0
-    resize_drag_data["y"] = 0
+def create_stop(event, button):
+    # Use final values to calculate polygon size
+    x1 = resize_drag_data["start_x"]
+    y1 = resize_drag_data["start_y"]
+    x2 = resize_drag_data["end_x"]
+    y2 = resize_drag_data["end_y"]
+    if button == 1:
+        canvas.create_line(x1, y1, x2, y2, fill="red", width=10)
+    elif button == 2:
+        vertices = [x1, y1, x2, y1, x2, y2, x1, y2]
+        canvas.create_polygon(vertices, outline="black", fill="lightyellow", width=5)
+
+        resize_drag_data["start_x"] = 0
+        resize_drag_data["start_y"] = 0
+        resize_drag_data["end_x"] = 0
+        resize_drag_data["end_y"] = 0
+    else:
+        pass
 
 
-def drag_resize(event):
-    global resize_dragging
-    coordinates = find_vertices(resize_drag_data["item"])
-
-    if resize_dragging:
-        delta_x = event.x - resize_drag_data["x"]
-        delta_y = event.y - resize_drag_data["y"]
-
-        new_size = []
-        for x, y in coordinates:
-            new_x = x + delta_x
-            new_y = y + delta_y
-            new_size.append((new_x, new_y))
-
-        canvas.coords(resize_drag_data["item"], *sum(new_size, ()))
-
-        resize_drag_data["x"] = event.x
-        resize_drag_data["y"] = event.y
-"""
+def create_size(event):
+    # capture final polygon coordinates (bottom right corner)  as the mouse is moved
+    resize_drag_data["end_x"] = event.x
+    resize_drag_data["end_y"] = event.y
 
 
 def update_selected(value):
@@ -117,10 +109,8 @@ def button_select(event):
     x = event.x
     y = event.y
     if buttonSelected == 1:
-        create_furnishing("darkgreen", x, y)
         window.config(cursor="arrow")
     elif buttonSelected == 2:
-        create_furnishing("lightgreen", x, y)
         window.config(cursor="dotbox")
     else:
         window.config(cursor="")
@@ -159,15 +149,15 @@ addFurnishings = tk.Button(master=buttons, text="Add\nFurnishing", width=10, bg=
                            command=lambda: update_selected(2))
 addFurnishings.pack()
 
-removeEither = tk.Button(master=buttons, text="Pointer", width=10, bg="lightblue",
-                         command=lambda: update_selected(0))
-removeEither.pack()
-
-message = tk.Label(master=buttons, text="Left click\nto add and\ndrag, right\nclick to\ndelete", width=10, bg="white")
+message = tk.Label(master=buttons, text="Left click\nand drag to\ndraw shape.\nRight click\nand drag\nto move\nshape",
+                   width=10)
 message.pack(pady=5)
 
 message2 = tk.Label(master=buttons, text="Right/left\narrow keys to\nrotate items\nclockwise/\nanticlockwise")
 message2.pack()
+
+message3 = tk.Label(master=buttons, text="Press\nBackspace\nto delete.", width=10)
+message3.pack(pady=5)
 
 # Components to be added to workspace
 canvas = tk.Canvas(window, width=500, height=250, bg="lightyellow")
@@ -176,19 +166,23 @@ canvas.bind("<Button-1>", button_select)
 
 # used to keep track of a furnishing being dragged
 move_drag_data = {"x": 0, "y": 0, "item": None}
-"""
-resize_dragging = False
-resize_drag_data = {"x": 0, "y": 0, "item": None}
-"""
+resize_drag_data = {"start_x": 0, "start_y": 0, "end_x": 0, "end_y": 0}
 
 # bound events
 canvas.focus_set()
-canvas.tag_bind("furnishing", "<ButtonPress-3>", delete_furnishing)  # right click
-canvas.tag_bind("furnishing", "<ButtonPress-1>", drag_start)  # left click
-canvas.tag_bind("furnishing", "<ButtonRelease-1>", drag_stop)  # left click
-canvas.tag_bind("furnishing", "<B1-Motion>", drag)  # left click
-canvas.bind("<Left>", lambda event: rotate_furnishing(False, event))  # left arrow
-canvas.bind("<Right>", lambda event: rotate_furnishing(True, event))
+# BackSpace
+canvas.bind("<BackSpace>", delete_furnishing)
+# right click
+canvas.bind("<ButtonPress-3>", drag_start)
+canvas.bind("<ButtonRelease-3>", drag_stop)
+canvas.bind("<B3-Motion>", drag)
+# left click
+canvas.bind("<ButtonPress-1>", create_start)
+canvas.bind("<ButtonRelease-1>", lambda event: create_stop(event, buttonSelected))
+canvas.bind("<B1-Motion>", create_size)
+# arrow keys
+canvas.bind("<Left>", lambda event: rotate(event, False))
+canvas.bind("<Right>", lambda event: rotate(event, True))
 
 # Build GUI
 window.mainloop()

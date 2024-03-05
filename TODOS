@@ -1,19 +1,16 @@
 need:
 - tidy up!!!!
-- wall functionality in general. draw one wall, start drawing the next from where last one finished.
-repeat until final wall meets placement of first wall origin
 - sizes of objects displayed next to the corresponding object, would need to merge object and its size label into one.
-This would allow the object and label to be updated together as needed.
-- objects need to maintain their qualities as they are rotated (start green but get rotated into black)
+This would allow the object and label to be updated together as needed.s
 
 in progress:
 - what buttons are needed? (being changed as needed right now...)
-- drag to alter size (Currently works same as drag to move. Need to keep on corner vertex the same while resizing.)
 
 Done:
 - base workspace
 - basic buttons
-- adding to canvas at mouse location
+- adding to canvas at mouse location, drag to size
 - movable objects on canvas
 - deleting from canvas at mouse location
 - rotatable furnishings
+- notes / guide
