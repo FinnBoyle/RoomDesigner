@@ -46,27 +46,65 @@ def find_vertices(selected):
 
 def drag_start(event):
     # record item and its location
-    drag_data["item"] = canvas.find_closest(event.x, event.y)[0]
-    drag_data["x"] = event.x
-    drag_data["y"] = event.y
+    move_drag_data["item"] = canvas.find_closest(event.x, event.y)[0]
+    move_drag_data["x"] = event.x
+    move_drag_data["y"] = event.y
 
 
 def drag_stop(event):
     # reset drag information
-    drag_data["item"] = None
-    drag_data["x"] = 0
-    drag_data["y"] = 0
+    move_drag_data["item"] = None
+    move_drag_data["x"] = 0
+    move_drag_data["y"] = 0
 
 
 def drag(event):
     # compute how much mouse has moved
-    delta_x = event.x - drag_data["x"]
-    delta_y = event.y - drag_data["y"]
+    delta_x = event.x - move_drag_data["x"]
+    delta_y = event.y - move_drag_data["y"]
     # now move the furnishing
-    canvas.move(drag_data["item"], delta_x, delta_y)
+    canvas.move(move_drag_data["item"], delta_x, delta_y)
     # record new pos
-    drag_data["x"] = event.x
-    drag_data["y"] = event.y
+    move_drag_data["x"] = event.x
+    move_drag_data["y"] = event.y
+
+
+"""
+def resize_start(event):
+    global resize_dragging
+    resize_dragging = True
+    resize_drag_data["item"] = canvas.find_closest(event.x, event.y)[0]
+    resize_drag_data["x"] = event.x
+    resize_drag_data["y"] = event.y
+
+
+def resize_stop(event):
+    global resize_dragging
+    resize_dragging = False
+    resize_drag_data["item"] = None
+    resize_drag_data["x"] = 0
+    resize_drag_data["y"] = 0
+
+
+def drag_resize(event):
+    global resize_dragging
+    coordinates = find_vertices(resize_drag_data["item"])
+
+    if resize_dragging:
+        delta_x = event.x - resize_drag_data["x"]
+        delta_y = event.y - resize_drag_data["y"]
+
+        new_size = []
+        for x, y in coordinates:
+            new_x = x + delta_x
+            new_y = y + delta_y
+            new_size.append((new_x, new_y))
+
+        canvas.coords(resize_drag_data["item"], *sum(new_size, ()))
+
+        resize_drag_data["x"] = event.x
+        resize_drag_data["y"] = event.y
+"""
 
 
 def update_selected(value):
@@ -137,15 +175,14 @@ canvas.pack(fill=tk.BOTH, expand=True)
 canvas.bind("<Button-1>", button_select)
 
 # used to keep track of a furnishing being dragged
-drag_data = {"x": 0, "y": 0, "item": None}
+move_drag_data = {"x": 0, "y": 0, "item": None}
+"""
+resize_dragging = False
+resize_drag_data = {"x": 0, "y": 0, "item": None}
+"""
 
-
-def printc(event):
-    print("test")
-
-
-canvas.focus_set()
 # bound events
+canvas.focus_set()
 canvas.tag_bind("furnishing", "<ButtonPress-3>", delete_furnishing)  # right click
 canvas.tag_bind("furnishing", "<ButtonPress-1>", drag_start)  # left click
 canvas.tag_bind("furnishing", "<ButtonRelease-1>", drag_stop)  # left click
