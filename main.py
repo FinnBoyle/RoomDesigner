@@ -4,6 +4,13 @@ import tkinter as tk
 buttonSelected = 0
 
 
+def follow_cursor(event):
+    global spot
+    spot.destroy()
+    spot = tk.Label(text=f"{round(event.x / 100, 1)}, {round(event.y / 100, 1)}")
+    spot.place(x=event.x+100, y=event.y+25)
+
+
 def delete_furnishing(event):
     canvas.delete(canvas.find_closest(event.x, event.y))
 
@@ -159,6 +166,9 @@ message2.pack()
 message3 = tk.Label(master=buttons, text="Press\nBackspace\nto delete.", width=10)
 message3.pack(pady=5)
 
+spot = tk.Label(text="")  # to be updated
+spot.place(x=0, y=0)
+
 # Components to be added to workspace
 canvas = tk.Canvas(window, width=500, height=250, bg="lightyellow")
 canvas.pack(fill=tk.BOTH, expand=True)
@@ -179,10 +189,11 @@ canvas.bind("<B3-Motion>", drag)
 # left click
 canvas.bind("<ButtonPress-1>", create_start)
 canvas.bind("<ButtonRelease-1>", lambda event: create_stop(event, buttonSelected))
-canvas.bind("<B1-Motion>", create_size)
+canvas.bind("<B1-Motion>", lambda event: (create_size(event), follow_cursor(event)))
 # arrow keys
 canvas.bind("<Left>", lambda event: rotate(event, False))
 canvas.bind("<Right>", lambda event: rotate(event, True))
 
+canvas.bind("<Motion>", follow_cursor)
 # Build GUI
 window.mainloop()

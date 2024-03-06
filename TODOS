@@ -1,10 +1,10 @@
 need:
 - tidy up!!!!
-- sizes of objects displayed next to the corresponding object, would need to merge object and its size label into one.
-This would allow the object and label to be updated together as needed.s
 
 in progress:
 - what buttons are needed? (being changed as needed right now...)
+- size displays (currently shows mouse position, needs to show before location and after location,
+ideally showing difference between, updated dynamically)
 
 Done:
 - base workspace
