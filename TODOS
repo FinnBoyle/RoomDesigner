@@ -1,10 +1,9 @@
 need:
-- tidy up!!!!
+- exe file?
+- canvas stretches as window stretches. If window shrinks, add scroll bars.
 
 in progress:
-- what buttons are needed? (being changed as needed right now...)
-- size displays (currently shows mouse position, needs to show before location and after location,
-ideally showing difference between, updated dynamically)
+- code cleanup
 
 Done:
 - base workspace
@@ -14,3 +13,4 @@ Done:
 - deleting from canvas at mouse location
 - rotatable furnishings
 - notes / guide
+- furnishing size indicator

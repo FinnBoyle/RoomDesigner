@@ -5,10 +5,22 @@ buttonSelected = 0
 
 
 def follow_cursor(event):
-    global spot
-    spot.destroy()
-    spot = tk.Label(text=f"{round(event.x / 100, 1)}, {round(event.y / 100, 1)}")
-    spot.place(x=event.x+100, y=event.y+25)
+    global position
+    position.destroy()
+    x = round(event.x / 100, 1)
+    y = round(event.y / 100, 1)
+    position = tk.Label(text=f"{x}, {y}")
+    position.place(x=event.x + 100, y=event.y + 25)
+
+
+def measure_size(event):
+    global size_position
+    x = round((event.x - size_calculation["original_x"]) / 100, 1)
+    y = round((event.y - size_calculation["original_y"]) / 100, 1)
+
+    size_position.destroy()
+    size_position = tk.Label(text=f"{x}, {y}")
+    size_position.place(x=event.x + 100, y=event.y)
 
 
 def delete_furnishing(event):
@@ -79,6 +91,10 @@ def create_start(event):
     resize_drag_data["start_x"] = event.x
     resize_drag_data["start_y"] = event.y
 
+    # collect starting position when creating
+    size_calculation["original_x"] = event.x
+    size_calculation["original_y"] = event.y
+
 
 def create_stop(event, button):
     # Use final values to calculate polygon size
@@ -99,6 +115,9 @@ def create_stop(event, button):
     else:
         pass
 
+    size_calculation["original_x"] = 0
+    size_calculation["original_y"] = 0
+
 
 def create_size(event):
     # capture final polygon coordinates (bottom right corner)  as the mouse is moved
@@ -113,8 +132,6 @@ def update_selected(value):
 
 def button_select(event):
     global buttonSelected
-    x = event.x
-    y = event.y
     if buttonSelected == 1:
         window.config(cursor="arrow")
     elif buttonSelected == 2:
@@ -138,6 +155,7 @@ def set_cursor(event):
 
 def escape(event):
     window.attributes("-fullscreen", False)
+
 
 # Create window
 window = tk.Tk()
@@ -176,17 +194,21 @@ message3.pack(pady=5)
 message4 = tk.Label(master=buttons, text="Press\nEscape to\nleave\nfullscreen.", width=10)
 message4.pack()
 
-spot = tk.Label(text="")  # to be updated
-spot.place(x=0, y=0)
+position = tk.Label(text="")  # to be updated
+position.place(x=100000, y=100000)
+
+size_position = tk.Label(text="")
+size_position.place(x=100000, y=100000)
 
 # Components to be added to workspace
 canvas = tk.Canvas(window, width=500, height=250, bg="lightyellow")
 canvas.pack(fill=tk.BOTH, expand=True)
 canvas.bind("<Button-1>", button_select)
 
-# used to keep track of a furnishing being dragged
+# dictionaries
 move_drag_data = {"x": 0, "y": 0, "item": None}
 resize_drag_data = {"start_x": 0, "start_y": 0, "end_x": 0, "end_y": 0}
+size_calculation = {"original_x": 0, "original_y": 0}
 
 # bound events
 canvas.focus_set()
@@ -199,7 +221,7 @@ canvas.bind("<B3-Motion>", drag)
 # left click
 canvas.bind("<ButtonPress-1>", create_start)
 canvas.bind("<ButtonRelease-1>", lambda event: create_stop(event, buttonSelected))
-canvas.bind("<B1-Motion>", lambda event: (create_size(event), follow_cursor(event)))
+canvas.bind("<B1-Motion>", lambda event: (create_size(event), follow_cursor(event), measure_size(event)))
 # arrow keys
 canvas.bind("<Left>", lambda event: rotate(event, False))
 canvas.bind("<Right>", lambda event: rotate(event, True))
