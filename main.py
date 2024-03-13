@@ -136,10 +136,14 @@ def set_cursor(event):
         print("Mouse cursor config error")
 
 
+def escape(event):
+    window.attributes("-fullscreen", False)
+
 # Create window
 window = tk.Tk()
 window.title("Room Designer")
 window.minsize(1000, 500)
+window.attributes("-fullscreen", True)
 
 # set cursor
 window.bind("<Enter>", set_cursor)
@@ -156,6 +160,9 @@ addFurnishings = tk.Button(master=buttons, text="Add\nFurnishing", width=10, bg=
                            command=lambda: update_selected(2))
 addFurnishings.pack()
 
+reset = tk.Button(master=buttons, text="Pointer", width=10, bg="lightblue", command=lambda: update_selected(0))
+reset.pack()
+
 message = tk.Label(master=buttons, text="Left click\nand drag to\ndraw shape.\nRight click\nand drag\nto move\nshape",
                    width=10)
 message.pack(pady=5)
@@ -165,6 +172,9 @@ message2.pack()
 
 message3 = tk.Label(master=buttons, text="Press\nBackspace\nto delete.", width=10)
 message3.pack(pady=5)
+
+message4 = tk.Label(master=buttons, text="Press\nEscape to\nleave\nfullscreen.", width=10)
+message4.pack()
 
 spot = tk.Label(text="")  # to be updated
 spot.place(x=0, y=0)
@@ -193,6 +203,8 @@ canvas.bind("<B1-Motion>", lambda event: (create_size(event), follow_cursor(even
 # arrow keys
 canvas.bind("<Left>", lambda event: rotate(event, False))
 canvas.bind("<Right>", lambda event: rotate(event, True))
+# Escape key
+canvas.bind("<Escape>", escape)
 
 canvas.bind("<Motion>", follow_cursor)
 # Build GUI
